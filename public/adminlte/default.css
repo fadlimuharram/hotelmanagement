@@ -1,0 +1,15 @@
+.errorclass{
+  position: fixed;
+  z-index: 999999;
+  bottom: 2px;
+  right: 2px;
+}
+#erroreditprofile{
+  display: none;
+}
+#dashboard .info-box{
+  box-shadow: none;
+}
+.pointercursor{
+  cursor: pointer;
+}
