@@ -14,17 +14,24 @@
 Route::get('/', 'Auth\LoginController@viewlogin');
 
 Route::group(['middleware' => ['web','admin']], function () {
-  Route::get('/dashboard', 'DashboardController@index');
+  Route::get('dashboard', 'DashboardController@index');
   Route::get('logout','UserController@logout');
-  Route::resource('profiles','UserController');
-  Route::post('editprofile','UserController@editcurrentuser');
   Route::get('RoomSettings','RoomssettingController@index');
+
+  Route::post('editprofile','UserController@editcurrentuser');
+  Route::post('acceptaccess','UserController@acceptaccess');
+  Route::post('revokeaccess','UserController@revokeaccess');
+
+  Route::resource('profiles','UserController');
+  Route::resource('Rooms','RoomController');
   Route::resource('types','TypesController',['only'=>[
     'store','update','destroy'
     ]]);
   Route::resource('status','StatusController',['only'=>[
     'store','update','destroy'
     ]]);
+
+
 });
 
 Auth::routes();

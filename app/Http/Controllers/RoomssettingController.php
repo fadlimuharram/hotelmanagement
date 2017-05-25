@@ -9,9 +9,7 @@ use App\Status;
 
 class RoomssettingController extends Controller
 {
-    protected $dirprofile = 'profilepic';
-    protected $diricon = 'iconpic';
-
+  
     public function index()
     {
         $gettype = Types::get();

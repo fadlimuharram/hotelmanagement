@@ -162,6 +162,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   $('#hex_color').colorpicker();
   var urltypes = '<?php echo url('types'); ?>';
   var urlstatus = '<?php echo url('status'); ?>';
+  var urlacceptaccess = '<?php echo url('acceptaccess'); ?>';
+  var urlrevokeaccess = '<?php echo url('revokeaccess'); ?>';
 </script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

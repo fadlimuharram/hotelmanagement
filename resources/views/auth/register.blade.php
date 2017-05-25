@@ -24,6 +24,20 @@
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('ktp') ? ' has-error' : '' }}">
+                            <label for="ktp" class="col-md-4 control-label">KTP</label>
+
+                            <div class="col-md-6">
+                                <input id="ktp" type="text" class="form-control" name="ktp" value="{{ old('ktp') }}" required>
+
+                                @if ($errors->has('ktp'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('ktp') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                             <label for="email" class="col-md-4 control-label">E-Mail Address</label>
 

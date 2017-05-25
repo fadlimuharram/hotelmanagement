@@ -3,76 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends Controller
 {
 
-    public function index()
-    {
-        return view('admin.dashboard',[ 
+    public function index(){
+
+        return view('admin.dashboard',[
           'gettype'=> \App\Types::get(),
-          'getstatus'=> \App\Status::get()
+          'getstatus'=> \App\Status::get(),
+          'getrooms'=> \App\Rooms::with('types','status')->get()
         ]);
+
     }
 
-    public function create()
-    {
-        //
+    protected function validateroom($request){
+      $validasi = Validator::make($request->all(),[
+        'rnumber'=>'required|unique:rooms,rnumber|max:10',
+        'type'=>'required|exists:types,id',
+        'status'=>'required|exists:statuses,id'
+      ]);
+
+      if ($validasi->fails()){
+        return $validasi;
+      }else {
+        return true;
+      }
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

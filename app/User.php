@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'picture', 'password', 'is_register',
+        'name', 'email', 'picture', 'password','ktp', 'is_register',
     ];
 
     /**
@@ -24,7 +24,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 
+        'password', 'remember_token',
     ];
 
     public function is_admin(){
@@ -35,5 +35,9 @@ class User extends Authenticatable
         return false;
       }
 
+    }
+
+    public function TrackedEditedUsers(){
+      return $this->hasMany('App\TrackedModel\TrackedEditedUsers','users_id');
     }
 }

@@ -10,30 +10,21 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-  
+
 
     public function index()
     {
-
-        return view('admin.profile');
+        $getusers = User::get();
+        return view('admin.profile',['getusers'=>$getusers]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+  
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
 
@@ -41,46 +32,24 @@ class UserController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         //
@@ -104,6 +73,13 @@ class UserController extends Controller
 
       $cek['name'] = 'required|max:45';
 
+      if ($request->ktp != Auth::user()->ktp) {
+        $cek['ktp'] = 'required|min:16|unique:users';
+      }else {
+        $cek['ktp'] = 'required|min:16';
+      }
+
+
       if ($request->file('picprofile') != null) {
         $cek['picprofile'] = 'mimes:jpeg,jpg,png|max:10000';
       }
@@ -124,15 +100,71 @@ class UserController extends Controller
         $reqimg->storeAs('public/'.$this->dirprofile,$imagename);
       }
 
-
+      $deskripsi = Auth::user()->name . " has edited their profile on " . \Carbon\Carbon::now()->toDateTimeString() . " With Ip Address : " . $request->ip();;//unutk deskripsi tracked_edited_users
 
       $masuk = User::findorfail($id);
       $masuk->password = ($request->password != '') ? bcrypt($request->password) : $masuk->password;
       $masuk->email = $request->email;
       $masuk->name = $request->name;
+      $masuk->ktp = $request->ktp;
       $masuk->picture = ($request->file('picprofile')!=null) ? $imagename : $masuk->picture;
 
       $masuk->save();
+
+      $this->insert_tracked_user($id,$request,$deskripsi);//unutk deskripsi tracked_edited_users
+
+      return redirect('profiles');
+    }
+
+    public function insert_tracked_user($id_user,$request,$deskripsi){
+      $msk = new \App\TrackedModel\TrackedEditedUsers;
+      $msk->name  = $request->name;
+      $msk->email = $request->email;
+      $msk->ktp   = $request->ktp;
+      $msk->description = $deskripsi;
+      $msk->users_id = $id_user;
+      $msk->timestamps = true;
+      $msk->save();
+      return true;
+    }
+
+    public function insert_tracked_accept_revoke($id_user,$desc){
+      $msk = new \App\TrackedModel\TrackedAcceptRevokeUsers;
+      $msk->users_id = $id_user;
+      $msk->description = $desc;
+      $msk->save();
+
+      return true;
+    }
+
+    public function acceptaccess(Request $req){
+      if ($req->id != Auth::user()->id) {
+        $acc = User::findOrFail($req->id);
+        $acc->is_register = 't';
+
+        $desc = 'User ' . Auth::user()->name . ' Is Accpted Admin Access To User ' . $acc->name;
+        $acc->save();
+
+
+
+        $this->insert_tracked_accept_revoke(Auth::user()->id,$desc);
+
+      }
+      return redirect('profiles');
+    }
+
+    public function revokeaccess(Request $req){
+      if ($req->id != Auth::user()->id) {
+        $revoke = User::findOrFail($req->id);
+        $revoke->is_register = 'f';
+
+        $desc = 'User ' . Auth::user()->name . ' Is Revoke Admin Access To User ' . $revoke->name;
+
+        $revoke->save();
+
+
+        $this->insert_tracked_accept_revoke(Auth::user()->id,$desc);
+      }
       return redirect('profiles');
     }
 

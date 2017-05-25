@@ -47,7 +47,42 @@ function hapusstatus(id,token,status){
         _token:token
       },
       success: function(msg){
-        console.log(msg);
+        location.reload();
+      }
+    });
+
+  }
+}
+
+function acceptaccess(id,name,token){
+  var conf = confirm('Are You Sure Want To Accept Access User ' + name + ' ? ');
+  if (conf) {
+    $.ajax({
+      url: urlacceptaccess,
+      type: 'post',
+      data: {
+        id: id,
+        _token: token
+      },
+      success: function(){
+        location.reload();
+      }
+    });
+
+  }
+}
+
+function revokeaccess(id,name,token){
+  var conf = confirm('Are You Sure Want To Revoke Access User ' + name + ' ? ');
+  if (conf) {
+    $.ajax({
+      url: urlrevokeaccess,
+      type: 'post',
+      data: {
+        id: id,
+        _token: token
+      },
+      success: function(){
         location.reload();
       }
     });

@@ -17,7 +17,7 @@ class CreateRoomsTable extends Migration
           $table->engine = 'InnoDB';
           $table->increments('id');
           $table->integer('current_occupied')->nullable();
-          $table->string('rnumber',5);
+          $table->string('rnumber',10);
           $table->timestamps();
 
         });
